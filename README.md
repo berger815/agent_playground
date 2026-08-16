@@ -1,26 +1,26 @@
-# Babel — Infinite Language Ground
+# Babel — Artificial Development Laboratory
 
-Babel is a browser-native experiment in emergent symbolic communication. A sender observes one of four hidden targets, transmits one of four initially meaningless symbols, and a receiver chooses a direction. Both policies learn only from their shared outcome.
+> A locally running artificial-development laboratory where users create agents, agents train with other agents, environments evolve around their limitations, and increasingly complex language becomes necessary for continued success.
 
-## What makes the result testable
+**Build agents. Evolve worlds. Watch language emerge.**
 
-- No prescribed dictionary
-- Exact sender and receiver probability traces
-- Frozen-policy intact, scrambled-message, and silent-channel evaluations
-- Counterfactual replay for every available symbol
-- Deterministic experiment seeds
-- Entirely local computation with no AI API or paid service
+Babel is a browser-native laboratory for emergent communication. It is deliberately small enough to inspect: every agent is an actual configurable multilayer policy, every reward is explicit, and every claim can be challenged with a causal intervention.
 
-An acquired protocol should score substantially above its chance baseline while intact, then collapse toward chance when the message is scrambled or removed.
+## Development Lab 0.3
 
-## Infinite Ground 0.2
+- **Agent Foundry:** create agents with 0–3 hidden layers, 4–32 neurons per layer, selectable activation, learning rate, exploration temperature, and mutation scale.
+- **Real inheritance:** clone learned weights exactly or create a perturbed descendant while keeping the parent.
+- **Training partnerships:** select any sender, receiver, and world. Each combination has an independent experiment ledger.
+- **World Forge:** direct a local curriculum compiler, inspect its explicit proposal, and preserve an indefinite lineage of environmental descendants.
+- **Cross-play:** evaluate every sender against every receiver to distinguish transferable structure from private dialects.
+- **Decision microscope:** inspect action probabilities, chosen symbols, reward, baseline-relative advantage, and recent trials.
+- **Causal tests:** compare intact communication against scrambled and silent channels using frozen policies.
+- **Persistent laboratory:** browser-local autosave plus portable JSON export and import.
+- **Human bridge:** compile a bounded direction instruction into the learned protocol and execute it without an LLM or API.
 
-- A persistent model expands from two to eight grounded spatial meanings.
-- The Curriculum Architect accepts local plain-language directives and proposes explicit challenge mutations.
-- Challenge changes can add meanings, constrain vocabulary, corrupt the signal channel, corrupt feedback, and change mastery gates.
-- Applying a frontier preserves learned model weights and archives the capability exit score.
-- The Human Language Bridge compiles supported user instructions into executable task graphs, translates them through the emergent protocol, and reports the resulting world action.
-- Auto-advance can generate a new frontier after a verified mastery gate.
+## Reward and learning
+
+Both policies receive `+1.00` for a correct joint action and `−0.25` for an incorrect one. A moving reward baseline supplies the advantage signal. Policy gradients update the sender's selected symbol and receiver's selected action through their configured networks. Agents are never gained or deleted as punishment; the user performs selection by preserving, cloning, mutating, or retiring attention from a lineage.
 
 ## Run locally
 
@@ -29,6 +29,8 @@ npm install
 npm run dev
 ```
 
-## Current scope
+No paid service, model API, account, or server is required after the static app loads.
 
-The current build demonstrates persistent grounded signaling and the first human-language bridge. It does not claim unrestricted natural-language understanding. Compositional messages, object attributes, population mixing, cultural transmission, dialect separation, and conflicting incentives remain future model expansions.
+## Honest boundary
+
+World lineages are open-ended, but the current semantic substrate is bounded to eight spatial meanings and eight symbols. This release establishes the durable laboratory loop. Compositional messages, objects and attributes, multi-step tasks, ecology, reproduction, and cultural transmission are future substrate expansions—not claims made by v0.3.
