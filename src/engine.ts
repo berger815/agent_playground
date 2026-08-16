@@ -1,0 +1,35 @@
+export type Activation = "tanh" | "relu" | "sigmoid";
+export type Point = { x:number; y:number };
+export type Obstacle = Point & { r:number };
+export type Gate = Point & { r:number };
+export type Course = { name:string; start:Point & { angle:number }; finish:Gate; gates:Gate[]; obstacles:Obstacle[] };
+export type Car = Point & { angle:number; speed:number; gate:number; collisions:number; energy:number; jerk:number; lastSteer:number; elapsed:number; complete:boolean };
+export type Control = { steer:number; throttle:number };
+export type Sample = { input:number[]; output:number[] };
+export type Network = { sizes:number[]; activation:Activation; weights:number[][][] };
+export type Score = { completion:number; time:number; collisions:number; energy:number; smoothness:number };
+export type Decision = { observation:string; action:string; result:string; reward:number; update:string; inputs:number[]; outputs:number[] };
+
+export const W=720, H=980;
+export const clamp=(n:number,a:number,b:number)=>Math.max(a,Math.min(b,n));
+const rand=(a=-1,b=1)=>a+Math.random()*(b-a);
+const normAngle=(a:number)=>Math.atan2(Math.sin(a),Math.cos(a));
+
+export const defaultCourse=():Course=>({name:"Night Slalom",start:{x:110,y:880,angle:-1.42},finish:{x:610,y:100,r:40},gates:[{x:235,y:760,r:34},{x:510,y:650,r:34},{x:245,y:510,r:34},{x:500,y:355,r:34},{x:360,y:220,r:34}],obstacles:[{x:355,y:740,r:48},{x:360,y:590,r:56},{x:350,y:420,r:48},{x:210,y:300,r:42},{x:530,y:230,r:44}]});
+export const blankCourse=():Course=>({name:"My course",start:{x:100,y:870,angle:-Math.PI/2},finish:{x:620,y:110,r:40},gates:[],obstacles:[]});
+export const makeCar=(course:Course):Car=>({...course.start,speed:0,gate:0,collisions:0,energy:0,jerk:0,lastSteer:0,elapsed:0,complete:false});
+
+function activate(x:number,a:Activation){return a==="tanh"?Math.tanh(x):a==="relu"?Math.max(0,x):1/(1+Math.exp(-clamp(x,-20,20)))}
+function derivative(y:number,a:Activation){return a==="tanh"?1-y*y:a==="relu"?(y>0?1:0):y*(1-y)}
+export function createNetwork(width=12,depth=2,activation:Activation="tanh"):Network{const sizes=[8,...Array(depth).fill(width),2],weights:number[][][]=[];for(let l=1;l<sizes.length;l++)weights.push(Array.from({length:sizes[l]},()=>Array.from({length:sizes[l-1]+1},()=>rand(-1,1)*Math.sqrt(2/sizes[l-1]))));return{sizes,activation,weights}}
+export function cloneNetwork(n:Network,mutation=0):Network{return{sizes:[...n.sizes],activation:n.activation,weights:n.weights.map(layer=>layer.map(row=>row.map(v=>v+rand(-mutation,mutation))))}}
+export function forward(net:Network,input:number[]){let values=[...input];for(let l=0;l<net.weights.length;l++)values=net.weights[l].map(row=>activate(row.slice(0,-1).reduce((s,w,i)=>s+w*values[i],row.at(-1)!),l===net.weights.length-1?"tanh":net.activation));return values}
+export function targetFor(course:Course,car:Car):Gate{return car.gate<course.gates.length?course.gates[car.gate]:course.finish}
+function rayClearance(course:Course,car:Car,offset:number){const angle=car.angle+offset;let clear=150;for(const o of course.obstacles){const dx=o.x-car.x,dy=o.y-car.y,along=dx*Math.cos(angle)+dy*Math.sin(angle),side=Math.abs(-dx*Math.sin(angle)+dy*Math.cos(angle));if(along>0&&side<o.r+16)clear=Math.min(clear,Math.max(0,along-o.r-12))}return clear/150}
+export function observe(course:Course,car:Car){const t=targetFor(course,car),dx=t.x-car.x,dy=t.y-car.y,bearing=normAngle(Math.atan2(dy,dx)-car.angle),d=Math.hypot(dx,dy);return[clamp(Math.sin(bearing),-1,1),clamp(Math.cos(bearing),-1,1),clamp(d/500,0,1.5),clamp(car.speed/5,-1,1),rayClearance(course,car,-.55),rayClearance(course,car,0),rayClearance(course,car,.55),clamp(car.gate/Math.max(1,course.gates.length),0,1)]}
+
+export function stepCar(course:Course,car:Car,control:Control,dt=.016){if(car.complete)return{hit:false,gate:false,finished:true,progress:0};const before=Math.hypot(targetFor(course,car).x-car.x,targetFor(course,car).y-car.y),scale=dt*60,steer=clamp(control.steer,-1,1),throttle=clamp(control.throttle,-1,1);car.speed=clamp(car.speed+throttle*.12*scale-car.speed*.025*scale,-2.1,5.2);car.angle=normAngle(car.angle+steer*(.022+.018*Math.abs(car.speed))*scale);car.x+=Math.cos(car.angle)*car.speed*scale;car.y+=Math.sin(car.angle)*car.speed*scale;car.elapsed+=dt;car.energy+=Math.abs(throttle)*dt;car.jerk+=Math.abs(steer-car.lastSteer);car.lastSteer=steer;let hit=false;if(car.x<18||car.x>W-18||car.y<18||car.y>H-18){car.x=clamp(car.x,18,W-18);car.y=clamp(car.y,18,H-18);car.speed*=-.25;hit=true}for(const o of course.obstacles){const dx=car.x-o.x,dy=car.y-o.y,d=Math.hypot(dx,dy),min=o.r+15;if(d<min){const nx=dx/(d||1),ny=dy/(d||1);car.x=o.x+nx*min;car.y=o.y+ny*min;car.speed*=-.18;hit=true}}if(hit)car.collisions++;const target=targetFor(course,car),after=Math.hypot(target.x-car.x,target.y-car.y);let gate=false,finished=false;if(after<target.r){gate=true;if(car.gate<course.gates.length)car.gate++;else{car.complete=true;finished=true;car.speed=0}}return{hit,gate,finished,progress:clamp((before-after)/40,-.2,.2)}}
+
+export function train(net:Network,samples:Sample[],epochs=18,rate=.012){if(!samples.length)return 0;let loss=0;for(let epoch=0;epoch<epochs;epoch++){for(let k=0;k<samples.length;k++){const sample=samples[(k*37+epoch*13)%samples.length],acts:number[][]=[[...sample.input]];let v=[...sample.input];for(let l=0;l<net.weights.length;l++){const raw=net.weights[l].map(row=>row.slice(0,-1).reduce((s,w,i)=>s+w*v[i],row.at(-1)!));v=raw.map(x=>activate(x,l===net.weights.length-1?"tanh":net.activation));acts.push(v)}const out=acts.at(-1)!;let delta=out.map((y,i)=>(y-sample.output[i])*(1-y*y));loss+=out.reduce((s,y,i)=>s+(y-sample.output[i])**2,0)/out.length;const deltas:number[][]=[delta];for(let l=net.weights.length-2;l>=0;l--){const next=net.weights[l+1],a=acts[l+1];delta=a.map((y,i)=>next.reduce((s,row,o)=>s+row[i]*delta[o],0)*derivative(y,net.activation));deltas.unshift(delta)}for(let l=0;l<net.weights.length;l++){const inp=acts[l],d=deltas[l];for(let o=0;o<net.weights[l].length;o++){for(let i=0;i<inp.length;i++)net.weights[l][o][i]-=rate*d[o]*inp[i];net.weights[l][o][inp.length]-=rate*d[o]}}}}return loss/(samples.length*epochs)}
+export function coachSamples(course:Course,count=700):Sample[]{const samples:Sample[]=[];for(let lap=0;lap<8&&samples.length<count;lap++){const car=makeCar(course);for(let i=0;i<1800&&!car.complete&&samples.length<count;i++){const input=observe(course,car),bearing=Math.atan2(input[0],input[1]),left=input[4],front=input[5],right=input[6];let steer=clamp(bearing*1.35,-1,1);if(front<.55)steer+=left>right?-.8:.8;steer=clamp(steer+rand(-.04,.04),-1,1);const throttle=front<.28?.05:Math.abs(bearing)>.8?.35:.82;samples.push({input,output:[steer,throttle]});stepCar(course,car,{steer,throttle},.032)}}return samples}
+export function score(car:Car,course:Course):Score{const completion=(car.gate+(car.complete?1:0))/(course.gates.length+1);return{completion,time:car.complete?Math.max(0,100-car.elapsed*1.7):0,collisions:Math.max(0,100-car.collisions*12),energy:Math.max(0,100-car.energy*1.8),smoothness:Math.max(0,100-car.jerk/Math.max(1,car.elapsed)*5)}}
