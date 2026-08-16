@@ -6,7 +6,7 @@
 
 Babel is a browser-native laboratory for emergent communication. It is deliberately small enough to inspect: every agent is an actual configurable multilayer policy, every reward is explicit, and every claim can be challenged with a causal intervention.
 
-## Development Lab 0.3
+## Development Lab 0.4
 
 - **Agent Foundry:** create agents with 0–3 hidden layers, 4–32 neurons per layer, selectable activation, learning rate, exploration temperature, and mutation scale.
 - **Real inheritance:** clone learned weights exactly or create a perturbed descendant while keeping the parent.
@@ -17,6 +17,8 @@ Babel is a browser-native laboratory for emergent communication. It is deliberat
 - **Causal tests:** compare intact communication against scrambled and silent channels using frozen policies.
 - **Persistent laboratory:** browser-local autosave plus portable JSON export and import.
 - **Human bridge:** compile a bounded direction instruction into the learned protocol and execute it without an LLM or API.
+- **Compositional tasks:** Echo Corridor combines learned meanings into two-symbol instructions such as “north, then east” and rewards only a completely correct action chain.
+- **Research Expeditions:** a persistent evidence-based objective path points toward the next meaningful experiment without manufacturing a daily streak.
 
 ## Reward and learning
 
@@ -33,4 +35,4 @@ No paid service, model API, account, or server is required after the static app 
 
 ## Honest boundary
 
-World lineages are open-ended, but the current semantic substrate is bounded to eight spatial meanings and eight symbols. This release establishes the durable laboratory loop. Compositional messages, objects and attributes, multi-step tasks, ecology, reproduction, and cultural transmission are future substrate expansions—not claims made by v0.3.
+World lineages and task sequences are open-ended within safeguards, but the current semantic substrate is bounded to eight spatial meanings and eight symbols. This release establishes genuine multi-symbol composition. Objects and attributes, ecological resources, reproduction, cultural transmission, and unrestricted natural language remain future substrate expansions—not claims made by v0.4.

@@ -15,3 +15,13 @@ test("starter policies acquire a causal two-symbol protocol",()=>{
   assert.ok(intact>90,"the intact protocol should coordinate reliably");
   assert.ok(intact-scrambled>30,"scrambling symbols should causally break coordination");
 });
+
+test("a learned dictionary composes into two-step tasks without retraining",()=>{
+  let lab=createLab();
+  lab=trainLab(lab,2500);
+  const sender=lab.agents[0],receiver=lab.agents[1],echo=lab.worlds.find(world=>world.id==="world_echo")!;
+  const intact=evaluate(sender,receiver,echo,"intact",800).accuracy;
+  const scrambled=evaluate(sender,receiver,echo,"scrambled",800).accuracy;
+  assert.ok(intact>90,"single meanings should compose into reliable two-step messages");
+  assert.ok(intact-scrambled>50,"the symbol sequence should causally carry the task");
+});
