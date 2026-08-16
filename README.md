@@ -1,28 +1,30 @@
-# Babel — Artificial Development Laboratory
+# Babel — Open Artificial Ecology
 
-> A locally running artificial-development laboratory where users create agents, agents train with other agents, environments evolve around their limitations, and increasingly complex language becomes necessary for continued success.
+> A locally running artificial-development laboratory where users construct neural agents, release them beside other lineages, alter the laws of the world, and inspect what training and selection produce.
 
-**Build agents. Evolve worlds. Watch language emerge.**
+**Build a mind. Change the pressure. Follow the descendants.**
 
-Babel is a browser-native laboratory for emergent communication. It is deliberately small enough to inspect: every agent is an actual configurable multilayer policy, every reward is explicit, and every claim can be challenged with a causal intervention.
+Babel is no longer organized as a ladder of scripted scenarios. Version 0.5 is a continuous ecology with no prescribed winning sequence. Resources, hazards, energy, sensing, signaling, cooperation, reproduction, and learning all operate at the same time under rules the user can change while the ecology is running.
 
-## Development Lab 0.4
+## What is real in v0.5
 
-- **Agent Foundry:** create agents with 0–3 hidden layers, 4–32 neurons per layer, selectable activation, learning rate, exploration temperature, and mutation scale.
-- **Real inheritance:** clone learned weights exactly or create a perturbed descendant while keeping the parent.
-- **Training partnerships:** select any sender, receiver, and world. Each combination has an independent experiment ledger.
-- **World Forge:** direct a local curriculum compiler, inspect its explicit proposal, and preserve an indefinite lineage of environmental descendants.
-- **Cross-play:** evaluate every sender against every receiver to distinguish transferable structure from private dialects.
-- **Decision microscope:** inspect action probabilities, chosen symbols, reward, baseline-relative advantage, and recent trials.
-- **Causal tests:** compare intact communication against scrambled and silent channels using frozen policies.
+- **Agent Foundry:** choose zero to three hidden layers, neurons per layer, activation function, learning rate, exploration temperature, mutation scale, sensors, sensing radius, harvest capability, and metabolic cost.
+- **Actual neural policies:** every active agent runs a configurable feed-forward network whose weights update through an online policy-gradient eligibility trace.
+- **Open ecology:** agents move, sense, signal, collect resources, encounter hazards, spend energy, and reproduce continuously. There is no level-completion script.
+- **Unequal bodies:** observers, gatherers, generalists, and minimal agents can coexist. A user may create any other combination.
+- **Communication pressure:** nearby signals are optional sensory inputs; signaling costs energy; shared resources may require multiple agents. Whether a useful protocol appears is an experimental result, not a scripted event.
+- **Within-life training and inheritance:** agents update weights from recent ecological outcomes. Descendants inherit learned weights with optional mutation.
+- **Architectural mutation:** descendants can change layer depth, width, activation, learning rate, and exploration when structural mutation is enabled.
+- **Human-assisted versus autonomous lineages:** coach-enabled agents accept recorded positive or negative feedback. Autonomous agents remain isolated from explicit human reward.
+- **Decision microscope:** inspect action probabilities, emitted symbol probabilities, reproduction impulse, architecture, weight saturation, sensors, reward, and intervention history.
+- **Causal ledger:** births, deaths, cooperative harvests, and human interventions are recorded without inventing an internal narrative.
 - **Persistent laboratory:** browser-local autosave plus portable JSON export and import.
-- **Human bridge:** compile a bounded direction instruction into the learned protocol and execute it without an LLM or API.
-- **Compositional tasks:** Echo Corridor combines learned meanings into two-symbol instructions such as “north, then east” and rewards only a completely correct action chain.
-- **Research Expeditions:** a persistent evidence-based objective path points toward the next meaningful experiment without manufacturing a daily streak.
 
-## Reward and learning
+## Ecology and learning
 
-Both policies receive `+1.00` for a correct joint action and `−0.25` for an incorrect one. A moving reward baseline supplies the advantage signal. Policy gradients update the sender's selected symbol and receiver's selected action through their configured networks. Agents are never gained or deleted as punishment; the user performs selection by preserving, cloning, mutating, or retiring attention from a lineage.
+Every step changes an agent's energy. Resources create positive reward; metabolism, signaling, and hazards create negative reward. The reward is applied backward through a short eligibility trace so recent movement and signaling decisions can be reinforced. Each agent maintains its own moving reward baseline.
+
+Reproduction is an output of the policy rather than an automatic clock. It can occur only above the world's energy threshold and below the population ceiling. The descendant inherits the parent's trained network; mutation may alter weights or network structure. An inactive lineage is not described as punished—the ecology simply stopped allocating it an active population slot.
 
 ## Run locally
 
@@ -31,8 +33,15 @@ npm install
 npm run dev
 ```
 
-No paid service, model API, account, or server is required after the static app loads.
+Validation:
+
+```bash
+npm test
+npm run build
+```
+
+No model API, paid service, account, or server is required after the static application loads.
 
 ## Honest boundary
 
-World lineages and task sequences are open-ended within safeguards, but the current semantic substrate is bounded to eight spatial meanings and eight symbols. This release establishes genuine multi-symbol composition. Objects and attributes, ecological resources, reproduction, cultural transmission, and unrestricted natural language remain future substrate expansions—not claims made by v0.4.
+This is a small artificial ecology, not unrestricted artificial life. Agents have bounded sensors, five movement actions, five signal states, and a compact reproduction output. They can acquire policies and produce mutated descendants, but they do not yet deliberately specify a child's complete architecture or interpret unrestricted natural-language goals. Those are future experimental layers and are not claimed by this release.
