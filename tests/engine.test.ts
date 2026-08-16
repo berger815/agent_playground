@@ -1,27 +1,44 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {createLab,evaluate,rollingAccuracy,runKey,trainLab} from "../src/babel.ts";
+import {coachAgent,cloneSelected,createGenome,createSimulation,finiteSimulation,releaseFounder,stepSimulation} from "../src/engine.ts";
 
-test("starter policies acquire a causal two-symbol protocol",()=>{
-  let lab=createLab();
-  lab=trainLab(lab,2500);
-  const sender=lab.agents[0],receiver=lab.agents[1],world=lab.worlds[0];
-  const run=lab.runs[runKey(sender.id,receiver.id,world.id)];
-  const intact=evaluate(sender,receiver,world,"intact",800).accuracy;
-  const scrambled=evaluate(sender,receiver,world,"scrambled",800).accuracy;
-  const weights=lab.agents.flatMap(agent=>agent.sender.weights.flat(2).concat(agent.receiver.weights.flat(2)));
-  assert.ok(weights.every(Number.isFinite),"all learned weights should remain finite");
-  assert.ok(rollingAccuracy(run)>90,"the starter pair should master Hidden Compass");
-  assert.ok(intact>90,"the intact protocol should coordinate reliably");
-  assert.ok(intact-scrambled>30,"scrambling symbols should causally break coordination");
+test("the open ecology remains numerically finite while policies train",()=>{
+  const sim=createSimulation(815);
+  stepSimulation(sim,1200);
+  assert.ok(sim.tick===1200);
+  assert.ok(sim.resources.length<=sim.rules.resourceCap);
+  assert.ok(finiteSimulation(sim),"all active learned weights should remain finite");
+  assert.ok(sim.totalDecisions>0,"agents should have acted in the ecology");
 });
 
-test("a learned dictionary composes into two-step tasks without retraining",()=>{
-  let lab=createLab();
-  lab=trainLab(lab,2500);
-  const sender=lab.agents[0],receiver=lab.agents[1],echo=lab.worlds.find(world=>world.id==="world_echo")!;
-  const intact=evaluate(sender,receiver,echo,"intact",800).accuracy;
-  const scrambled=evaluate(sender,receiver,echo,"scrambled",800).accuracy;
-  assert.ok(intact>90,"single meanings should compose into reliable two-step messages");
-  assert.ok(intact-scrambled>50,"the symbol sequence should causally carry the task");
+test("a human-built neural architecture is released exactly as configured",()=>{
+  const sim=createSimulation(91);
+  const genome=createGenome({name:"Test founder",hidden:[7,5,3],activation:"relu",sensors:["energy","heardSignal"],trainingMode:"coach-enabled"});
+  const agent=releaseFounder(sim,genome);
+  assert.deepEqual(agent.network.sizes,[6,7,5,3,11]);
+  assert.equal(agent.network.activation,"relu");
+  assert.equal(agent.genome.trainingMode,"coach-enabled");
+});
+
+test("coaching is isolated from autonomous lineages and recorded for enabled agents",()=>{
+  const sim=createSimulation(42);
+  const autonomous=sim.agents[0];
+  const coached=releaseFounder(sim,createGenome({name:"Coached",trainingMode:"coach-enabled"}));
+  stepSimulation(sim,8);
+  assert.equal(coachAgent(sim,autonomous.id,.5),false);
+  assert.equal(coachAgent(sim,coached.id,.5),true);
+  assert.equal(coached.coachingEvents,1);
+  assert.ok(finiteSimulation(sim));
+});
+
+test("learned policies can be cloned or structurally mutated without deleting the parent",()=>{
+  const sim=createSimulation(123);
+  const parent=sim.agents[0],count=sim.agents.length;
+  const exact=cloneSelected(sim,parent.id,false);
+  const mutated=cloneSelected(sim,parent.id,true);
+  assert.ok(exact&&mutated);
+  assert.equal(sim.agents.length,count+2);
+  assert.ok(sim.agents.some(agent=>agent.id===parent.id));
+  assert.deepEqual(exact!.network.weights,parent.network.weights);
+  assert.ok(finiteSimulation(sim));
 });
