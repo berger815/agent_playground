@@ -1,16 +1,34 @@
-# Babel — Language Genesis Lab
+# Babel — Infinite Language Ground
 
-A browser-native experiment in emergent symbolic communication. The agents develop a grounded four-symbol protocol locally, with no model API or paid service.
+Babel is a browser-native experiment in emergent symbolic communication. A sender observes one of four hidden targets, transmits one of four initially meaningless symbols, and a receiver chooses a direction. Both policies learn only from their shared outcome.
 
-The experiment includes exact decision traces, counterfactual replay, and frozen-policy channel ablations that test whether the symbols causally affect receiver behavior.
+## What makes the result testable
 
-## Current experiment
+- No prescribed dictionary
+- Exact sender and receiver probability traces
+- Frozen-policy intact, scrambled-message, and silent-channel evaluations
+- Counterfactual replay for every available symbol
+- Deterministic experiment seeds
+- Entirely local computation with no AI API or paid service
 
-Protocol One: The Hidden Compass
+An acquired protocol should score substantially above its chance baseline while intact, then collapse toward chance when the message is scrambled or removed.
 
-- The sender sees one of four hidden targets.
-- The receiver sees only the transmitted symbol.
-- Both policies learn from their shared outcome.
-- A valid protocol must outperform the 25% chance baseline and collapse toward chance when messages are scrambled or removed.
+## Infinite Ground 0.2
 
-A live build is available from the project deployment.
+- A persistent model expands from two to eight grounded spatial meanings.
+- The Curriculum Architect accepts local plain-language directives and proposes explicit challenge mutations.
+- Challenge changes can add meanings, constrain vocabulary, corrupt the signal channel, corrupt feedback, and change mastery gates.
+- Applying a frontier preserves learned model weights and archives the capability exit score.
+- The Human Language Bridge compiles supported user instructions into executable task graphs, translates them through the emergent protocol, and reports the resulting world action.
+- Auto-advance can generate a new frontier after a verified mastery gate.
+
+## Run locally
+
+```bash
+npm install
+npm run dev
+```
+
+## Current scope
+
+The current build demonstrates persistent grounded signaling and the first human-language bridge. It does not claim unrestricted natural-language understanding. Compositional messages, object attributes, population mixing, cultural transmission, dialect separation, and conflicting incentives remain future model expansions.
